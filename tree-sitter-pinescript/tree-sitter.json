@@ -1,0 +1,39 @@
+{
+    "name": "pinescript",
+    "version": "0.1.0",
+    "description": "A tree-sitter grammar for PineScript",
+    "author": "David C Cavalcante",
+    "license": "MIT",
+    "keywords": ["tree-sitter", "parser", "pinescript"],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/takk8is/pinescript-extension-for-zed"
+    },
+    "grammars": [
+        {
+            "name": "pinescript",
+            "file-types": ["pine", "ps", "pinescript"],
+            "scope": "source.pinescript"
+        }
+    ],
+    "rules": {
+        "source_file": {
+            "type": "REPEAT",
+            "content": {
+                "type": "SYMBOL",
+                "name": "_definition"
+            }
+        }
+    },
+    "metadata": {
+        "language": "pinescript",
+        "type": "tree-sitter",
+        "version": "0.1.0",
+        "parser": {
+            "abi_version": 14,
+            "highlights_query": "highlights.scm",
+            "locals_query": "locals.scm",
+            "tags_query": "tags.scm"
+        }
+    }
+}

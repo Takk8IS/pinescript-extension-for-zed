@@ -1,0 +1,48 @@
+//@version=6
+indicator("My Custom Indicator", overlay=true)
+
+// Input variables
+length = input.int(14, "RSI Length")
+overbought = input.float(70, "Overbought Level")
+oversold = input.float(30, "Oversold Level")
+
+// Calculate RSI
+rsiValue = ta.rsi(close, length)
+
+// Plot RSI
+plot(rsiValue, "RSI", color=color.blue)
+
+// Plot overbought/oversold levels
+hline(overbought, "Overbought", color=color.red)
+hline(oversold, "Oversold", color=color.green)
+
+// Generate trading signals
+longCondition = ta.crossover(rsiValue, oversold)
+shortCondition = ta.crossunder(rsiValue, overbought)
+
+// Plot signals
+plotshape(longCondition, "Buy Signal", location=location.belowbar, color=color.green, style=shape.triangleup, size=size.small)
+plotshape(shortCondition, "Sell Signal", location=location.abovebar, color=color.red, style=shape.triangledown, size=size.small)
+
+// Strategy components
+if (longCondition)
+    strategy.entry("Long", strategy.long)
+
+if (shortCondition)
+    strategy.entry("Short", strategy.short)
+
+// Variables and calculations
+var float myVar = 0.0
+myVar := close > open ? 1.0 : 0.0
+
+// Custom function example
+getSMA(src, len) =>
+    ta.sma(src, len)
+
+// Using the custom function
+sma20 = getSMA(close, 20)
+plot(sma20, "20 SMA", color=color.purple)
+
+// Alert conditions
+alertcondition(longCondition, "Buy Alert", "RSI crossed above oversold")
+alertcondition(shortCondition, "Sell Alert", "RSI crossed below overbought")

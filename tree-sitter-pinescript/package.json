@@ -1,0 +1,28 @@
+{
+    "name": "tree-sitter-pinescript",
+    "version": "0.1.0",
+    "description": "Tree-sitter grammar for PineScript",
+    "main": "bindings/node",
+    "scripts": {
+        "build": "tree-sitter generate",
+        "test": "tree-sitter test",
+        "parse": "tree-sitter parse"
+    },
+    "dependencies": {
+        "nan": "^2.17.0"
+    },
+    "devDependencies": {
+        "tree-sitter": "^0.20.6",
+        "tree-sitter-cli": "^0.20.8"
+    },
+    "tree-sitter": [
+        {
+            "scope": "source.pinescript",
+            "file-types": [
+                "ps",
+                "pine",
+                "pinescript"
+            ]
+        }
+    ]
+}

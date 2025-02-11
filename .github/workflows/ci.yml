@@ -1,0 +1,102 @@
+name: CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+jobs:
+    build:
+        name: Build and Test
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Use Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "16.x"
+
+            - name: Install dependencies
+              run: |
+                  npm install
+                  npm install -g tree-sitter-cli
+
+            - name: Setup tree-sitter
+              run: |
+                  cd tree-sitter-pinescript
+                  echo '{
+                      "name": "pinescript",
+                      "version": "0.1.0",
+                      "description": "A tree-sitter grammar for PineScript",
+                      "author": "David C Cavalcante",
+                      "license": "MIT",
+                      "keywords": ["tree-sitter", "parser", "pinescript"],
+                      "repository": {
+                          "type": "git",
+                          "url": "https://github.com/takk8is/pinescript-extension-for-zed"
+                      },
+                      "grammars": [
+                          {
+                              "name": "pinescript",
+                              "file-types": ["pine", "ps", "pinescript"],
+                              "scope": "source.pinescript"
+                          }
+                      ],
+                      "rules": {
+                          "source_file": {
+                              "type": "REPEAT",
+                              "content": {
+                                  "type": "SYMBOL",
+                                  "name": "_definition"
+                              }
+                          }
+                      },
+                      "metadata": {
+                          "language": "pinescript",
+                          "type": "tree-sitter",
+                          "version": "0.1.0",
+                          "parser": {
+                              "abi_version": 14,
+                              "highlights_query": "highlights.scm",
+                              "locals_query": "locals.scm",
+                              "tags_query": "tags.scm"
+                          }
+                      }
+                  }' > tree-sitter.json
+                  tree-sitter init
+                  cd ..
+
+            - name: Build grammar and WASM
+              run: |
+                  cd tree-sitter-pinescript
+                  tree-sitter generate
+                  tree-sitter build
+                  npx tree-sitter build-wasm
+                  cd ..
+
+            - name: Run linting
+              run: npm run lint
+
+            - name: Run tests
+              run: npm test
+
+            - name: Prepare extension directory
+              run: |
+                  mkdir -p pinescript/grammars
+                  mkdir -p pinescript/languages/pinescript
+                  cp tree-sitter-pinescript/tree-sitter-pinescript.wasm pinescript/grammars/pinescript.wasm
+                  cp -r languages/pinescript/* pinescript/languages/pinescript/
+                  cp extension.toml pinescript/
+                  cp tree-sitter-pinescript/tree-sitter-pinescript.wasm pinescript/extension.wasm
+
+            - name: Upload build artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: pinescript
+                  path: pinescript
+                  if-no-files-found: error
+                  compression-level: 9
+                  overwrite: true

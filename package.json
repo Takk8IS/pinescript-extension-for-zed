@@ -1,0 +1,14 @@
+{
+    "name": "pinescript-extension-for-zed",
+    "version": "0.1.0",
+    "description": "PineScript support for TradingView indicators and strategies development in Zed",
+    "scripts": {
+        "build": "cd tree-sitter-pinescript && npm install && tree-sitter generate",
+        "test": "cd tree-sitter-pinescript && tree-sitter test",
+        "lint": "eslint . --fix"
+    },
+    "devDependencies": {
+        "eslint": "^8.56.0",
+        "tree-sitter-cli": "^0.20.8"
+    }
+}

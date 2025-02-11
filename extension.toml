@@ -1,0 +1,8 @@
+name = "PineScript"
+description = "💾 PineScript support for TradingView indicators and strategies development in Zed"
+authors = ["David C Cavalcante <davcavalcante@proton.me>", "Takk™ Innovate Studio <say@takk.ag>"]
+version = "0.1.0"
+repository = "https://github.com/takk8is/pinescript-extension-for-zed"
+
+[grammars.pinescript]
+path = "grammars/pinescript.wasm"
